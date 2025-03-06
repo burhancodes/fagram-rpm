@@ -13,11 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Wait for FajoX to release update
-        run: |
-          echo "Waiting for 2 hours..."
-          sleep 7200
-
       - name: Fetch latest release tag
         id: fetch_tag
         run: |
