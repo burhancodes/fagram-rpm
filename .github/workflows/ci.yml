@@ -6,6 +6,59 @@ on:
   workflow_dispatch:
 
 jobs:
+  download-artifacts:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup GH CLI
+        run: |
+          sudo apt update
+          sudo apt install gh
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Download and Extract Artifacts
+        env:
+          SOURCE_REPO: "FajoX1/fagramdesktop"
+          WORKFLOW_NAME: "linux"
+        run: |
+          RUN_ID=$(gh run list \
+            --repo $SOURCE_REPO \
+            --workflow $WORKFLOW_NAME \
+            --status success \
+            --limit 1 \
+            --json databaseId \
+            -q '.[0].databaseId')
+
+          echo "Downloading artifacts from run ID: $RUN_ID"
+          
+          gh run download $RUN_ID \
+            --repo $SOURCE_REPO \
+            --dir artifacts_download
+
+      - name: Create Release with Tarball
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TARBALL_PATH=$(find artifacts_download -name "*.tar.gz" -type f)
+          RELEASE_TAG=$(basename "$TARBALL_PATH" .tar.gz | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+')
+          
+          echo "Extracted release tag: $RELEASE_TAG"
+          
+          if gh release view "$RELEASE_TAG" --repo ${{ github.repository }} > /dev/null 2>&1; then
+            echo "Deleting existing release with tag $RELEASE_TAG..."
+            gh release delete "$RELEASE_TAG" --repo ${{ github.repository }} --yes
+          fi
+          
+          echo "Creating new release with tag $RELEASE_TAG..."
+          gh release create "$RELEASE_TAG" \
+            "$TARBALL_PATH" \
+            --title "Prebuilt Tarball - $RELEASE_TAG" \
+            --notes "Latest prebuilt tarball from FajoX1/fagramdesktop linux workflow" \
+            --repo ${{ github.repository }}
+
   update-spec:
     runs-on: ubuntu-24.04
 
@@ -26,31 +79,6 @@ jobs:
           sanitized_tag="${latest_tag#v}"
           echo "Sanitized tag: $sanitized_tag"
           echo "tag=$sanitized_tag" >> $GITHUB_ENV
-
-      - name: Check for tarball availability
-        id: check_tarball
-        run: |
-          version="${{ env.tag }}"
-          tarball_url="https://github.com/FajoX1/fagramdesktop/releases/download/v${version}/fagram-v${version}.tar.gz"
-          echo "Checking availability of tarball: $tarball_url"
-          retries=5
-          interval=30  # Reduced to 30 seconds for faster testing; adjust as needed
-          for ((i=1; i<=retries; i++)); do
-            echo "Attempt $i of $retries..."
-            response=$(curl -L -o /dev/null -s -w "%{http_code}" "$tarball_url")
-            echo "HTTP response code: $response"
-            if [[ "$response" == "200" ]]; then
-              echo "Tarball is available: $tarball_url"
-              echo "tarball_available=true" >> $GITHUB_ENV
-              exit 0
-            else
-              echo "Tarball not found (HTTP $response). Retrying in $interval seconds..."
-              sleep $interval
-            fi
-          done
-          echo "Error: Tarball not available after $retries attempts." >&2
-          echo "tarball_available=false" >> $GITHUB_ENV
-          exit 1
 
       - name: Check for version update
         id: check_update
