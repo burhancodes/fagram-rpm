@@ -17,7 +17,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install gh
-          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          echo "${{ secrets.PAT }}" | gh auth login --with-token
 
       - name: Download and Extract Artifacts
         env:
@@ -40,7 +40,7 @@ jobs:
 
       - name: Create Release with Tarball
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAT: ${{ secrets.PAT }}
         run: |
           TARBALL_PATH=$(find artifacts_download -name "*.tar.gz" -type f)
           RELEASE_TAG=$(basename "$TARBALL_PATH" .tar.gz | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+')
