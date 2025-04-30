@@ -70,7 +70,7 @@ jobs:
       - name: Fetch latest release tag
         id: fetch_tag
         run: |
-          latest_tag=$(curl -s https://api.github.com/repos/FajoX1/fagramdesktop/releases/latest | jq -r .tag_name)
+          latest_tag=$(curl -s https://api.github.com/repos/burhancodes/fagram-rpm/releases/latest | jq -r .tag_name)
           if [[ -z "$latest_tag" || "$latest_tag" == "null" ]]; then
             echo "Error: Failed to fetch the latest tag." >&2
             exit 1
