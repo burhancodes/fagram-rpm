@@ -98,6 +98,8 @@ jobs:
       - name: Update .spec file
         if: env.update_needed == 'true'
         run: |
+          git clone https://${{ secrets.PAT }}@github.com/burhancodes/fagram-rpm repo
+          cd repo
           sed -i "s/^Version:.*/Version:        ${{ env.tag }}/" fagram.spec
           git config --global user.name "burhanverse"
           git config --global user.email "contact@burhanverse.eu.org"
