@@ -83,7 +83,6 @@ jobs:
 
       - name: Check for version update
         id: check_update
-        if: env.tarball_available == 'true'
         run: |
           current_version=$(grep -E '^Version:' fagram.spec | awk '{print $2}' | tr -d '[:space:]')
           echo "Current version: $current_version"
@@ -97,7 +96,7 @@ jobs:
           fi
 
       - name: Update .spec file
-        if: env.update_needed == 'true' && env.tarball_available == 'true'
+        if: env.update_needed == 'true'
         run: |
           sed -i "s/^Version:.*/Version:        ${{ env.tag }}/" fagram.spec
           git config --global user.name "burhanverse"
