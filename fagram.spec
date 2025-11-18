@@ -6,7 +6,7 @@ Vendor:         burhancodes
 Group:          Applications/Internet
 Packager:       Burhanverse  <contact@burhanverse.eu.org>
 License:        GPLv3
-URL:            https://github.com/FajoX1/fagramdesktop
+URL:            https://github.com/burhancodes/fagramdesktop
 Source0:        https://github.com/burhancodes/fagram-rpm/releases/download/v%{version}/fagram-v%{version}.tar.gz
 
 %description

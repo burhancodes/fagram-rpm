@@ -21,7 +21,7 @@ jobs:
 
       - name: Download and Extract Artifacts
         env:
-          SOURCE_REPO: "FajoX1/fagramdesktop"
+          SOURCE_REPO: "burhancodes/fagramdesktop"
           WORKFLOW_NAME: "linux"
         run: |
           RUN_ID=$(gh run list \
@@ -56,7 +56,7 @@ jobs:
           gh release create "$RELEASE_TAG" \
             "$TARBALL_PATH" \
             --title "Prebuilt Tarball - $RELEASE_TAG" \
-            --notes "Latest prebuilt tarball from [FajoX1/fagramdesktop](https://github.com/FajoX1/fagramdesktop) linux workflow" \
+            --notes "Latest prebuilt tarball from [burhancodes/fagramdesktop](https://github.com/burhancodes/fagramdesktop) linux workflow" \
             --repo ${{ github.repository }}
 
   update-spec:
