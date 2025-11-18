@@ -7,7 +7,7 @@ Group:          Applications/Internet
 Packager:       Burhanverse  <contact@burhanverse.eu.org>
 License:        GPLv3
 URL:            https://github.com/burhancodes/fagramdesktop
-Source0:        https://github.com/burhancodes/fagram-rpm/releases/download/v%{version}/fagram-v%{version}.tar.gz
+Source0:        https://github.com/burhancodes/fagram-rpm/releases/download/v%{version}/fagram-%{version}.tar.gz
 
 %description
 FAgram Desktop is a custom Telegram client.
@@ -15,7 +15,7 @@ FAgram Desktop is a custom Telegram client.
 Author: FajoX1  <FajoX1@github.com>
 
 %prep
-tar -xvf %{_sourcedir}/fagram-v%{version}.tar.gz -C %{_sourcedir}
+tar -xvf %{_sourcedir}/fagram-%{version}.tar.gz -C %{_sourcedir}
 cd %{_sourcedir}/
 
 %build
