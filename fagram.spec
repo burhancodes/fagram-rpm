@@ -1,5 +1,5 @@
 Name:           fagram
-Version:        2.0.8
+Version:        2.0.9
 Release:        1%{?dist}
 Summary:        FAgram Desktop is a custom Telegram client.
 Vendor:         burhancodes
