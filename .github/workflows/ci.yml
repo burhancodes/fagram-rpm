@@ -8,7 +8,7 @@ on:
 jobs:
   download-artifacts:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
       - name: Download and Extract Artifacts
         env:
           SOURCE_REPO: "burhancodes/fagramdesktop"
-          WORKFLOW_NAME: "linux"
+          WORKFLOW_NAME: "build-linux.yml"
         run: |
           RUN_ID=$(gh run list \
             --repo $SOURCE_REPO \
@@ -33,9 +33,9 @@ jobs:
             -q '.[0].databaseId')
 
           echo "Downloading artifacts from run ID: $RUN_ID"
-          
+
           mkdir -p artifacts_download
-          
+
           if gh run download $RUN_ID \
             --repo $SOURCE_REPO \
             --dir artifacts_download 2>/dev/null; then
@@ -44,15 +44,15 @@ jobs:
           else
             echo "Failed to download artifacts from workflow run"
             echo "Falling back to latest release..."
-            
+
             LATEST_RELEASE=$(gh release view --repo $SOURCE_REPO --json tagName -q '.tagName')
             echo "Latest release: $LATEST_RELEASE"
-            
+
             gh release download "$LATEST_RELEASE" \
               --repo $SOURCE_REPO \
               --pattern "*.tar.gz" \
               --dir artifacts_download
-            
+
             echo "Downloaded from release:"
             ls -R artifacts_download
           fi
@@ -62,30 +62,30 @@ jobs:
           PAT: ${{ secrets.PAT }}
         run: |
           TARBALL_PATH=$(find artifacts_download -type f -name "*.tar.gz" | head -n1)
-          
+
           if [[ -z "$TARBALL_PATH" ]]; then
             echo "Error: No tarball found in artifacts_download" >&2
             echo "Directory contents:"
             ls -R artifacts_download
             exit 1
           fi
-          
+
           echo "Found tarball: $TARBALL_PATH"
           FILENAME=$(basename "$TARBALL_PATH" .tar.gz)
           RELEASE_TAG=$(echo "$FILENAME" | grep -oP 'v?\d+\.\d+\.\d+' | sed 's/^/v/')
-          
+
           if [[ -z "$RELEASE_TAG" ]]; then
             echo "Error: Could not extract version from filename: $FILENAME" >&2
             exit 1
           fi
-          
+
           echo "Extracted release tag: $RELEASE_TAG"
-          
+
           if gh release view "$RELEASE_TAG" --repo ${{ github.repository }} > /dev/null 2>&1; then
             echo "Deleting existing release with tag $RELEASE_TAG..."
             gh release delete "$RELEASE_TAG" --repo ${{ github.repository }} --yes
           fi
-          
+
           echo "Creating new release with tag $RELEASE_TAG..."
           gh release create "$RELEASE_TAG" \
             "$TARBALL_PATH" \
