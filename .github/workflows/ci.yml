@@ -148,7 +148,7 @@ jobs:
       - name: Trigger DEB repository dispatch event
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.DEBPAT }}
+          token: ${{ secrets.ARPAT }}
           repository: fagramdesktop/fagram-deb
           event-type: new-release
 
@@ -159,6 +159,6 @@ jobs:
       - name: Trigger AUR repository dispatch event
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.DEBPAT }}
+          token: ${{ secrets.ARPAT }}
           repository: fagramdesktop/fagram-bin
           event-type: update-aur
