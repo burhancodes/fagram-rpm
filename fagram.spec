@@ -40,11 +40,6 @@ cp -a %{_sourcedir}/usr/share/* %{buildroot}/usr/share/
 %dir /usr/share/metainfo
 /usr/share/metainfo/*
 
-%post
-if [ -f "/usr/share/applications/org.fagram.desktop" ]; then
-  rm -f /usr/share/applications/org.fagram.desktop
-fi
-
 %preun
   pkill -f '/usr/bin/fagram' || true
 
