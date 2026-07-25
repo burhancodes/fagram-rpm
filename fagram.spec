@@ -26,11 +26,13 @@ mkdir -p %{buildroot}/usr/share/icons
 mkdir -p %{buildroot}/usr/share/metainfo
 
 cp -a %{_sourcedir}/usr/bin/fagram %{buildroot}/usr/bin/
+cp -a %{_sourcedir}/usr/bin/Updater %{buildroot}/usr/bin/
 
 cp -a %{_sourcedir}/usr/share/* %{buildroot}/usr/share/
 
 %files
 /usr/bin/fagram
+/usr/bin/Updater
 %dir /usr/share/applications
 /usr/share/applications/*
 %dir /usr/share/dbus-1
@@ -42,6 +44,7 @@ cp -a %{_sourcedir}/usr/share/* %{buildroot}/usr/share/
 
 %preun
   pkill -f '/usr/bin/fagram' || true
+  pkill -f '/usr/bin/Updater' || true
 
 %postun
 if [ "$1" -eq 0 ]; then
