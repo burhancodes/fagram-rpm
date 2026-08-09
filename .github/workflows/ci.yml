@@ -50,7 +50,7 @@ jobs:
 
             gh release download "$LATEST_RELEASE" \
               --repo $SOURCE_REPO \
-              --pattern "*.tar.gz" \
+              --pattern "*.tar.zst" \
               --dir artifacts_download
 
             echo "Downloaded from release:"
@@ -61,7 +61,7 @@ jobs:
         env:
           PAT: ${{ secrets.PAT }}
         run: |
-          TARBALL_PATH=$(find artifacts_download -type f -name "*.tar.gz" | head -n1)
+          TARBALL_PATH=$(find artifacts_download -type f -name "*.tar.zst" | head -n1)
 
           if [[ -z "$TARBALL_PATH" ]]; then
             echo "Error: No tarball found in artifacts_download" >&2
@@ -71,7 +71,7 @@ jobs:
           fi
 
           echo "Found tarball: $TARBALL_PATH"
-          FILENAME=$(basename "$TARBALL_PATH" .tar.gz)
+          FILENAME=$(basename "$TARBALL_PATH" .tar.zst)
           RELEASE_TAG=$(echo "$FILENAME" | grep -oP 'v?\d+\.\d+\.\d+' | sed 's/^/v/')
 
           if [[ -z "$RELEASE_TAG" ]]; then
